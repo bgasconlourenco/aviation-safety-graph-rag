@@ -1,0 +1,22 @@
+# core data
+pandas>=2.1
+numpy>=1.26
+scipy>=1.12
+
+# graph
+neo4j>=5.19
+
+# embeddings (CPU-only torch pulled in automatically)
+sentence-transformers>=2.7
+
+# generation
+ollama>=0.2          # local LLM client
+anthropic>=0.28      # optional: Claude API fallback
+
+# app
+streamlit>=1.35
+python-dotenv>=1.0
+
+# dev / CI
+pytest>=8.1
+ruff>=0.4

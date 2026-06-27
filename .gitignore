@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+dist/
+build/
+.venv/
+venv/
+*.env
+
+# data — raw exports can be large; processed files are reproducible
+data/raw/
+data/processed/
+
+# secrets — keep the example template, exclude everything else
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# notebooks
+.ipynb_checkpoints/
+
+# editor
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
