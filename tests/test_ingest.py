@@ -1,6 +1,7 @@
-import pytest
 import pandas as pd
-from src.ingest import load, RAW_CSV, KEEP_COLS, VALID_FLIGHT_CONDITIONS
+import pytest
+
+from src.ingest import KEEP_COLS, RAW_CSV, VALID_FLIGHT_CONDITIONS, load
 
 
 @pytest.fixture(scope="module")
