@@ -104,7 +104,7 @@ SET i.date          = row.date,
 
 _LOAD_CONDITIONS = """
 UNWIND $rows AS row
-WHERE row.flight_conditions IS NOT NULL
+WITH row WHERE row.flight_conditions IS NOT NULL
 MATCH (i:Incident {acn: row.acn})
 MERGE (fc:FlightCondition {name: row.flight_conditions})
 MERGE (i)-[:HAD_CONDITIONS]->(fc)
@@ -112,7 +112,7 @@ MERGE (i)-[:HAD_CONDITIONS]->(fc)
 
 _LOAD_LIGHT = """
 UNWIND $rows AS row
-WHERE row.light IS NOT NULL
+WITH row WHERE row.light IS NOT NULL
 MATCH (i:Incident {acn: row.acn})
 MERGE (lc:LightCondition {name: row.light})
 MERGE (i)-[:OCCURRED_IN]->(lc)
@@ -127,7 +127,7 @@ MERGE (i)-[:WAS_MISSION]->(mt)
 
 _LOAD_PROBLEM = """
 UNWIND $rows AS row
-WHERE row.primary_problem IS NOT NULL
+WITH row WHERE row.primary_problem IS NOT NULL
 MATCH (i:Incident {acn: row.acn})
 MERGE (pp:ProblemType {name: row.primary_problem})
 MERGE (i)-[:HAS_PRIMARY_PROBLEM]->(pp)
@@ -135,7 +135,7 @@ MERGE (i)-[:HAS_PRIMARY_PROBLEM]->(pp)
 
 _LOAD_PHASE = """
 UNWIND $rows AS row
-WHERE row.flight_phase_primary IS NOT NULL
+WITH row WHERE row.flight_phase_primary IS NOT NULL
 MATCH (i:Incident {acn: row.acn})
 MERGE (fp:FlightPhase {name: row.flight_phase_primary})
 MERGE (i)-[:DURING_PHASE]->(fp)
@@ -143,7 +143,7 @@ MERGE (i)-[:DURING_PHASE]->(fp)
 
 _LOAD_ANOMALIES = """
 UNWIND $rows AS row
-WHERE size(row.anomaly_broad) > 0
+WITH row WHERE size(row.anomaly_broad) > 0
 MATCH (i:Incident {acn: row.acn})
 UNWIND row.anomaly_broad AS anomaly_name
 MERGE (a:AnomalyType {name: anomaly_name})
