@@ -7,13 +7,12 @@ import httpx
 from dotenv import load_dotenv
 from neo4j import Driver
 
-from src.embed import MODEL_NAME
-
 load_dotenv()
 
 TOP_K = 5
 OLLAMA_MODEL = "gemma3"
-_HF_EMBED_URL = f"https://api-inference.huggingface.co/models/sentence-transformers/{MODEL_NAME}"
+_MODEL_NAME = "all-MiniLM-L6-v2"
+_HF_EMBED_URL = f"https://api-inference.huggingface.co/models/sentence-transformers/{_MODEL_NAME}"
 
 # --- Cypher ---
 
@@ -62,7 +61,7 @@ def _embed(text: str, model=None) -> list[float]:
         return resp.json()
     if model is None:
         from sentence_transformers import SentenceTransformer  # noqa: PLC0415
-        model = SentenceTransformer(MODEL_NAME)
+        model = SentenceTransformer(_MODEL_NAME)
     return model.encode(text).tolist()
 
 
