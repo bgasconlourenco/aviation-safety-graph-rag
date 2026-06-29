@@ -4,7 +4,6 @@ import pytest
 
 from src.rag import _build_prompt, _format_context
 
-
 # --- Pure-Python helpers (always run) ---
 
 _HITS = [
@@ -66,12 +65,10 @@ def test_format_context_contains_meta():
 
 def test_format_context_skips_none_fields():
     ctx = _format_context(_HITS, _ENRICHMENT)
-    # second incident has no primary_problem or flight_phase
-    lines = ctx.split("\n")
-    incident2_lines = [l for l in lines if "9876543" in l or
-                       (lines.index(l) > next(i for i, x in enumerate(lines) if "9876543" in x))]
-    # just verify the block doesn't crash and is non-empty
-    assert len(ctx) > 0
+    # second incident has no primary_problem or flight_phase — those labels must not appear
+    incident2_block = ctx[ctx.index("9876543"):]
+    assert "Primary problem:" not in incident2_block
+    assert "Flight phase:" not in incident2_block
 
 
 def test_format_context_truncates_long_narrative():
@@ -121,6 +118,7 @@ def driver():
 def embed_model():
     try:
         from sentence_transformers import SentenceTransformer
+
         from src.embed import MODEL_NAME
         return SentenceTransformer(MODEL_NAME)
     except Exception as exc:

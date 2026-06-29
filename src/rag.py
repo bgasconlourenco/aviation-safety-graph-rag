@@ -12,7 +12,7 @@ from src.embed import MODEL_NAME
 load_dotenv()
 
 TOP_K = 5
-OLLAMA_MODEL = "llama3.2"
+OLLAMA_MODEL = "gemma3"
 
 # --- Cypher ---
 
