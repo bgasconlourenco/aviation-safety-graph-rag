@@ -76,6 +76,10 @@ st.caption(
     "Answers are grounded in real incident data retrieved from a Neo4j knowledge graph."
 )
 
+with st.sidebar:
+    st.header("Settings")
+    top_k = st.slider("Incidents to retrieve", min_value=1, max_value=20, value=5)
+
 if "history" not in st.session_state:
     st.session_state.history = []
 
@@ -97,7 +101,7 @@ if question:
     with st.chat_message("assistant"):
         with st.spinner("Searching incidents and generating answer…"):
             try:
-                result = ask(get_driver(), question, model=get_model(), top_k=5)
+                result = ask(get_driver(), question, model=get_model(), top_k=top_k)
             except RuntimeError as exc:
                 st.error(str(exc))
                 st.stop()
