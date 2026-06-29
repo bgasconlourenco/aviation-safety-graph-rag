@@ -15,3 +15,5 @@ services:
         sync: false
       - key: OLLAMA_BASE_URL
         value: http://localhost:9999
+      - key: HF_API_TOKEN
+        sync: false

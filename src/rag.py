@@ -3,9 +3,9 @@
 import os
 from typing import Any
 
+import httpx
 from dotenv import load_dotenv
 from neo4j import Driver
-from sentence_transformers import SentenceTransformer
 
 from src.embed import MODEL_NAME
 
@@ -13,6 +13,7 @@ load_dotenv()
 
 TOP_K = 5
 OLLAMA_MODEL = "gemma3"
+_HF_EMBED_URL = f"https://api-inference.huggingface.co/models/sentence-transformers/{MODEL_NAME}"
 
 # --- Cypher ---
 
@@ -47,16 +48,32 @@ RETURN fc.name          AS flight_conditions,
 
 # --- Core pipeline steps ---
 
+def _embed(text: str, model=None) -> list[float]:
+    """Embed text via HF Inference API (if HF_API_TOKEN set) or local model."""
+    api_token = os.getenv("HF_API_TOKEN")
+    if api_token:
+        resp = httpx.post(
+            _HF_EMBED_URL,
+            headers={"Authorization": f"Bearer {api_token}"},
+            json={"inputs": text},
+            timeout=30,
+        )
+        resp.raise_for_status()
+        return resp.json()
+    if model is None:
+        from sentence_transformers import SentenceTransformer  # noqa: PLC0415
+        model = SentenceTransformer(MODEL_NAME)
+    return model.encode(text).tolist()
+
+
 def retrieve(
     driver: Driver,
     query_text: str,
-    model: SentenceTransformer | None = None,
+    model=None,
     top_k: int = TOP_K,
 ) -> list[dict]:
     """Embed *query_text* and return the top-k most similar incidents."""
-    if model is None:
-        model = SentenceTransformer(MODEL_NAME)
-    query_vector = model.encode(query_text).tolist()
+    query_vector = _embed(query_text, model=model)
     with driver.session() as session:
         result = session.run(_VECTOR_SEARCH, k=top_k, query_vector=query_vector)
         return [dict(r) for r in result]
@@ -162,16 +179,13 @@ def answer(question: str, context: str) -> str:
 def ask(
     driver: Driver,
     question: str,
-    model: SentenceTransformer | None = None,
+    model=None,
     top_k: int = TOP_K,
 ) -> dict[str, Any]:
     """Full RAG pipeline: embed → retrieve → enrich → answer.
 
-    Returns a dict with keys: question, answer, sources, context.
+    Returns a dict with keys: question, answer, sources, enrichment, context.
     """
-    if model is None:
-        model = SentenceTransformer(MODEL_NAME)
-
     hits = retrieve(driver, question, model=model, top_k=top_k)
     acns = [h["acn"] for h in hits]
     enrichment = enrich(driver, acns)

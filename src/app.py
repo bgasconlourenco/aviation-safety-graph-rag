@@ -6,11 +6,11 @@ from pathlib import Path
 # ensure project root is on sys.path when launched via `streamlit run src/app.py`
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
+import os
+
 import streamlit as st
 from dotenv import load_dotenv
-from sentence_transformers import SentenceTransformer
 
-from src.embed import MODEL_NAME
 from src.graph_load import connect
 from src.rag import ask
 
@@ -32,6 +32,11 @@ def get_driver():
 
 @st.cache_resource(show_spinner="Loading embedding model…")
 def get_model():
+    if os.getenv("HF_API_TOKEN"):
+        return None  # embeddings handled via HF Inference API
+    from sentence_transformers import SentenceTransformer  # noqa: PLC0415
+
+    from src.embed import MODEL_NAME  # noqa: PLC0415
     return SentenceTransformer(MODEL_NAME)
 
 
