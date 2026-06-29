@@ -182,6 +182,7 @@ def ask(
         "question": question,
         "answer": response,
         "sources": hits,
+        "enrichment": enrichment,
         "context": context,
     }
 
