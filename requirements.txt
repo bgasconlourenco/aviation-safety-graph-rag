@@ -9,6 +9,7 @@ neo4j>=5.19
 
 # embeddings
 sentence-transformers>=5.0
+--extra-index-url https://download.pytorch.org/whl/cpu
 torch>=2.1
 
 # generation
