@@ -42,8 +42,8 @@ cp .env.example .env   # fill in Neo4j AuraDB credentials
 2. **Data ingestion** ✓ (`src/ingest.py`)
 3. **Cleaning + schema normalisation** ✓ (`src/ingest.py`)
 4. **Exploratory analysis + hypothesis tests** ✓ (`src/analysis.py`, `reports/analysis.md`)
-5. Neo4j schema + batched Cypher loading (`src/graph_load.py`)
-6. Embedding generation + vector index (`src/embed.py`)
+5. **Neo4j schema + batched Cypher loading** ✓ (`src/graph_load.py`)
+6. **Embedding generation + vector index** ✓ (`src/embed.py`)
 7. RAG retrieval pipeline (`src/rag.py`)
 8. GitHub Actions CI
 9. Streamlit demo
