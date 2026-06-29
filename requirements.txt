@@ -7,8 +7,9 @@ statsmodels>=0.14
 # graph
 neo4j>=5.19
 
-# embeddings — pinned to a range compatible with torch 2.x CPU builds
-sentence-transformers>=2.7,<3.0
+# embeddings
+sentence-transformers>=5.0
+torch>=2.1
 
 # generation
 ollama>=0.2          # local LLM client
