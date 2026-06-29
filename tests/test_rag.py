@@ -108,8 +108,12 @@ def driver():
     password = os.getenv("NEO4J_PASSWORD")
     if not uri or not password:
         pytest.skip("NEO4J_URI / NEO4J_PASSWORD not set")
-    from src.graph_load import connect
-    d = connect()
+    try:
+        from src.graph_load import connect
+        d = connect()
+        d.verify_connectivity()
+    except Exception as exc:
+        pytest.skip(f"Neo4j not reachable: {exc}")
     yield d
     d.close()
 
